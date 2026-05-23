@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nail Studio Pro — Painel da Profissional</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#D4537E;--pink-light:#FBEAF0;--pink-mid:#F4C0D1;
+  --teal:#1D9E75;--teal-light:#E1F5EE;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --purple:#534AB7;--purple-light:#EEEDFE;
+  --coral:#D85A30;--coral-light:#FAECE7;
+  --bg:#F7F5F2;--surface:#FFFFFF;--border:#E8E4DF;
+  --text:#1A1A1A;--text2:#6B6862;--text3:#9B9892;
+}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* AUTH */
+#screen-auth{align-items:center;justify-content:center;background:linear-gradient(135deg,#FBEAF0 0%,#F7F5F2 60%)}
+.auth-card{background:var(--surface);border-radius:24px;padding:40px;width:380px;max-width:95vw;box-shadow:0 4px 40px rgba(212,83,126,.12);text-align:center}
+.auth-logo{width:64px;height:64px;border-radius:20px;background:var(--pink);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:28px;color:#fff}
+.auth-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.auth-sub{font-size:14px;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.trial-badge{background:var(--teal-light);color:var(--teal);font-size:12px;padding:6px 14px;border-radius:20px;display:inline-flex;align-items:center;gap:6px;margin-bottom:20px;font-weight:500}
+.btn-google{width:100%;padding:13px;border:1.5px solid var(--border);border-radius:12px;background:var(--surface);cursor:not-allowed;font-size:14px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px;color:var(--text);opacity:.45}
+.google-icon{width:20px;height:20px}
+.auth-sep{display:flex;align-items:center;gap:10px;margin:14px 0;color:var(--text3);font-size:12px}
+.auth-sep::before,.auth-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+.auth-form input{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);background:var(--surface);margin-bottom:10px;outline:none;transition:border-color .15s}
+.auth-form input:focus{border-color:var(--pink)}
+.btn-primary{width:100%;padding:13px;background:var(--pink);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;transition:opacity .15s}
+.btn-primary:hover{opacity:.9}
+.auth-hint{font-size:11px;color:var(--amber);background:var(--amber-light);border-radius:8px;padding:7px 12px;margin-bottom:10px;display:flex;align-items:center;gap:6px;text-align:left}
+.auth-terms{font-size:11px;color:var(--text3);margin-top:14px;line-height:1.6}
+.forgot-btn{background:none;border:none;font-size:12px;color:var(--pink);cursor:pointer;padding:0;float:right;margin-top:-6px;margin-bottom:8px}
+
+/* SETUP */
+#screen-setup{align-items:center;justify-content:center;background:var(--bg)}
+.setup-card{background:var(--surface);border-radius:24px;padding:36px;width:420px;max-width:95vw;box-shadow:0 4px 40px rgba(0,0,0,.08)}
+.setup-card h2{font-size:20px;font-weight:700;margin-bottom:6px}
+.setup-card p{font-size:14px;color:var(--text2);margin-bottom:24px}
+.form-group{margin-bottom:14px}
+.form-group label{font-size:12px;color:var(--text2);font-weight:500;display:block;margin-bottom:5px}
+.form-group input,.form-group select{width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);background:var(--surface);outline:none;transition:border-color .15s}
+.form-group input:focus,.form-group select:focus{border-color:var(--pink)}
+
+/* PAYWALL */
+#screen-paywall{align-items:center;justify-content:center;background:linear-gradient(135deg,#FBEAF0,#F7F5F2)}
+.paywall-card{background:var(--surface);border-radius:24px;padding:40px;width:420px;max-width:95vw;box-shadow:0 4px 40px rgba(212,83,126,.15);text-align:center}
+.paywall-icon{width:72px;height:72px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:32px;color:var(--pink)}
+.plan-box{border:2px solid var(--pink);border-radius:16px;padding:20px;margin-bottom:20px;text-align:left}
+.plan-name{font-size:12px;color:var(--pink);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+.plan-price{font-size:36px;font-weight:700;margin:8px 0 4px}
+.plan-price span{font-size:16px;font-weight:400;color:var(--text2)}
+.plan-features{list-style:none;margin-top:12px;display:flex;flex-direction:column;gap:7px}
+.plan-features li{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px}
+.plan-features li i{color:var(--teal)}
+.btn-stripe{width:100%;padding:15px;background:var(--pink);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-stripe:hover{opacity:.9}
+
+/* MAIN APP */
+.topbar{background:var(--pink);color:#fff;padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-logo{width:34px;height:34px;background:rgba(255,255,255,.25);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.trial-pill{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.35);padding:4px 10px;border-radius:20px;font-size:11px;display:flex;align-items:center;gap:5px}
+.avatar-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.3);border:2px solid rgba(255,255,255,.5);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:11px;font-weight:700;color:#fff}
+.nav-bar{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 8px;overflow-x:auto;flex-shrink:0}
+.nav-item{padding:12px 14px;cursor:pointer;font-size:12px;color:var(--text2);border-bottom:2px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:6px;font-weight:500}
+.nav-item.active{color:var(--pink);border-bottom-color:var(--pink)}
+.nav-item i{font-size:17px}
+.app-content{flex:1;overflow-y:auto;padding:20px;background:var(--bg)}
+.tab{display:none}.tab.active{display:block}
+
+/* CARDS */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.metric-card{background:var(--surface);border-radius:12px;padding:14px;border:1px solid var(--border)}
+.metric-label{font-size:11px;color:var(--text2);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.metric-value{font-size:22px;font-weight:700}
+.metric-sub{font-size:11px;color:var(--text2);margin-top:3px}
+.metric-up{color:var(--teal)}.metric-down{color:var(--coral)}
+.card{background:var(--surface);border-radius:14px;padding:18px;border:1px solid var(--border);margin-bottom:14px}
+.card-title{font-size:13px;font-weight:600;color:var(--text2);margin-bottom:14px;display:flex;align-items:center;gap:6px}
+
+/* SERVICES */
+.svc-item{background:var(--bg);border-radius:12px;padding:14px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.svc-icon{width:40px;height:40px;border-radius:10px;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.svc-info{flex:1;min-width:0}
+.svc-name{font-size:14px;font-weight:600}
+.svc-dur{font-size:12px;color:var(--text2)}
+.svc-price{font-size:16px;font-weight:700;color:var(--pink);flex-shrink:0}
+.svc-actions{display:flex;gap:6px;flex-shrink:0}
+.icon-btn{width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--surface);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:16px}
+.icon-btn:hover{border-color:var(--pink);color:var(--pink)}
+.icon-btn.danger:hover{border-color:var(--coral);color:var(--coral)}
+.btn-add-svc{width:100%;padding:12px;border:2px dashed var(--border);border-radius:12px;background:transparent;cursor:pointer;font-size:14px;color:var(--text2);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:6px}
+.btn-add-svc:hover{border-color:var(--pink);color:var(--pink);background:var(--pink-light)}
+
+/* AGENDA */
+.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:14px}
+.day-cell{text-align:center;padding:6px 2px;border-radius:10px;cursor:pointer}
+.day-cell-name{font-size:10px;color:var(--text3);margin-bottom:2px}
+.day-cell-num{font-size:15px;font-weight:600;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto}
+.day-cell.today .day-cell-num{background:var(--pink);color:#fff}
+.day-dot{width:5px;height:5px;border-radius:50%;background:var(--pink);margin:2px auto 0}
+.agenda-slots{display:flex;flex-direction:column;gap:4px}
+.slot-row{display:flex;gap:10px;align-items:stretch}
+.slot-time{font-size:11px;color:var(--text3);width:40px;flex-shrink:0;padding-top:8px;text-align:right}
+.slot-line{width:1px;background:var(--border);flex-shrink:0}
+.slot-body{flex:1;padding-bottom:3px}
+.appt-block{border-radius:0 8px 8px 0;padding:7px 10px;margin-bottom:3px;border-left:3px solid var(--pink);background:var(--pink-light);cursor:pointer}
+.appt-block.c2{border-left-color:var(--teal);background:var(--teal-light)}
+.appt-block.c3{border-left-color:var(--purple);background:var(--purple-light)}
+.appt-block.c4{border-left-color:var(--amber);background:var(--amber-light)}
+.appt-block-name{font-size:12px;font-weight:600}
+.appt-block-info{font-size:11px;color:var(--text2)}
+.appt-block-status{font-size:10px;margin-top:2px}
+.slot-empty{height:34px}
+.btn-new{background:var(--pink);color:#fff;border:none;padding:9px 16px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
+
+/* CRM */
+.crm-table{width:100%;border-collapse:collapse}
+.crm-table th{font-size:11px;color:var(--text2);font-weight:600;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
+.crm-table td{font-size:13px;padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.crm-table tr:last-child td{border-bottom:none}
+.crm-table tr:hover td{background:#F9F7F5}
+.badge{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600}
+.badge-vip{background:var(--purple-light);color:var(--purple)}
+.badge-reg{background:var(--teal-light);color:var(--teal)}
+.badge-new{background:var(--amber-light);color:var(--amber)}
+.badge-pend{background:var(--amber-light);color:var(--amber)}
+.badge-conf{background:var(--teal-light);color:var(--teal)}
+.badge-done{background:#EEF2FF;color:#4338CA}
+.badge-canc{background:var(--coral-light);color:var(--coral)}
+.av-sm{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0}
+
+/* FIN */
+.progress-wrap{margin:10px 0}
+.progress-label{display:flex;justify-content:space-between;font-size:12px;color:var(--text2);margin-bottom:4px}
+.progress-track{height:7px;background:var(--bg);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
+.progress-fill{height:100%;border-radius:4px;background:var(--pink)}
+.fin-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);font-size:13px}
+.fin-row:last-child{border-bottom:none}
+
+/* PROFILE */
+.profile-header{text-align:center;padding:20px;background:var(--surface);border-radius:14px;border:1px solid var(--border);margin-bottom:14px}
+.profile-av{width:70px;height:70px;border-radius:50%;background:var(--pink-light);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--pink);margin:0 auto 12px}
+.config-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
+.config-row:last-child{border-bottom:none}
+.toggle{width:40px;height:22px;border-radius:11px;background:var(--pink);position:relative;cursor:pointer;flex-shrink:0}
+.toggle::after{content:'';width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px;transition:right .2s,left .2s}
+.toggle.off{background:var(--border)}
+.toggle.off::after{right:auto;left:2px}
+.btn-outline{padding:9px 16px;border:1.5px solid var(--border);background:var(--surface);border-radius:10px;cursor:pointer;font-size:13px;font-weight:500;color:var(--text);display:inline-flex;align-items:center;gap:6px}
+.btn-outline:hover{border-color:var(--pink);color:var(--pink)}
+.btn-logout{width:100%;padding:12px;border:1.5px solid var(--border);background:var(--surface);border-radius:10px;cursor:pointer;font-size:14px;font-weight:500;color:var(--text2);margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-logout:hover{border-color:var(--coral);color:var(--coral)}
+
+/* MODAL */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:1000;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--surface);border-radius:20px;padding:26px;width:360px;max-width:95vw;max-height:90vh;overflow-y:auto}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:16px}
+.modal-actions{display:flex;gap:10px;margin-top:18px}
+.btn-cancel{flex:1;padding:11px;border:1.5px solid var(--border);background:var(--surface);border-radius:10px;cursor:pointer;font-size:14px;color:var(--text2)}
+.btn-save{flex:1;padding:11px;background:var(--pink);color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600}
+
+/* CHART */
+.bar-chart{display:flex;align-items:flex-end;gap:5px;height:90px;margin-top:8px}
+.bar-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+.bar{width:100%;border-radius:4px 4px 0 0;background:var(--pink-mid);min-height:3px}
+.bar.best{background:var(--pink)}
+.bar-label{font-size:10px;color:var(--text3)}
+
+/* NOTIF */
+.notif{position:fixed;top:20px;right:20px;background:var(--teal);color:#fff;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:500;z-index:9999;opacity:0;pointer-events:none;transition:opacity .3s;max-width:300px}
+.notif.show{opacity:1}
+.notif.err{background:var(--coral)}
+
+/* EMPTY STATE */
+.empty-state{text-align:center;padding:32px;color:var(--text3)}
+.empty-state i{font-size:40px;margin-bottom:12px;display:block}
+
+@media(max-width:600px){
+  .metrics{grid-template-columns:1fr 1fr}
+  .dash-grid{grid-template-columns:1fr!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH ===== -->
+<div class="screen active" id="screen-auth">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="ti ti-sparkles"></i></div>
+    <h1 class="auth-title">Nail Studio Pro</h1>
+    <p class="auth-sub">Sistema completo para manicures e nail designers</p>
+    <div class="trial-badge"><i class="ti ti-gift"></i> 7 dias grátis — sem cartão</div>
+    <button class="btn-google" disabled title="Disponível após hospedar na Vercel">
+      <svg class="google-icon" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.5 12.28c0-.79-.07-1.54-.19-2.28H12v4.31h6.47a5.54 5.54 0 0 1-2.4 3.63v3h3.88c2.27-2.09 3.55-5.17 3.55-8.66z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.07 7.93-2.91l-3.88-3c-1.08.72-2.45 1.15-4.05 1.15-3.11 0-5.75-2.1-6.69-4.92H1.3v3.1A11.99 11.99 0 0 0 12 24z"/><path fill="#FBBC05" d="M5.31 14.32A7.22 7.22 0 0 1 4.93 12c0-.81.14-1.6.38-2.32V6.58H1.3A11.99 11.99 0 0 0 0 12c0 1.93.46 3.75 1.3 5.42l4.01-3.1z"/><path fill="#EA4335" d="M12 4.76c1.76 0 3.34.6 4.58 1.79l3.44-3.44C17.95 1.19 15.24 0 12 0A11.99 11.99 0 0 0 1.3 6.58l4.01 3.1C6.25 6.86 8.89 4.76 12 4.76z"/></svg>
+      Entrar com Google
+    </button>
+    <div class="auth-hint"><i class="ti ti-info-circle"></i> Login Google disponível após hospedar na Vercel. Use e-mail abaixo.</div>
+    <div class="auth-sep">entrar com e-mail</div>
+    <div class="auth-form">
+      <input type="email" id="auth-email" placeholder="seu@email.com" />
+      <input type="password" id="auth-pass" placeholder="Senha (mínimo 6 caracteres)" />
+      <button class="forgot-btn" type="button" onclick="forgotPassword()">Esqueci minha senha</button>
+      <div style="clear:both"></div>
+      <button class="btn-primary" onclick="loginEmail()" id="auth-btn">Criar conta grátis</button>
+    </div>
+    <p class="auth-terms">Ao continuar você concorda com os Termos de Uso. Após o período grátis a assinatura é R$ 59,90/mês.</p>
+  </div>
+</div>
+
+<!-- ===== SETUP ===== -->
+<div class="screen" id="screen-setup">
+  <div class="setup-card">
+    <h2>Bem-vinda! 🎉</h2>
+    <p>Configure seu perfil para começar o período grátis de 7 dias.</p>
+    <div class="form-group"><label>Seu nome completo</label><input type="text" id="setup-name" placeholder="Ex: Mariana Santos"/></div>
+    <div class="form-group"><label>Nome do seu studio / negócio</label><input type="text" id="setup-company" placeholder="Ex: Nail Studio da Mariana"/></div>
+    <div class="form-group"><label>Cidade</label><input type="text" id="setup-city" placeholder="Ex: Nova Iguaçu, RJ"/></div>
+    <div class="form-group"><label>WhatsApp (com DDD)</label><input type="text" id="setup-phone" placeholder="(21) 99999-8888"/></div>
+    <button class="btn-primary" style="margin-top:8px" onclick="finishSetup()">Começar período grátis <i class="ti ti-arrow-right"></i></button>
+  </div>
+</div>
+
+<!-- ===== PAYWALL ===== -->
+<div class="screen" id="screen-paywall">
+  <div class="paywall-card">
+    <div class="paywall-icon"><i class="ti ti-crown"></i></div>
+    <h2 id="pw-title" style="font-size:22px;font-weight:700;margin-bottom:8px">Período gratuito encerrado</h2>
+    <p id="pw-sub" style="font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:20px">Assine para continuar gerenciando seu negócio.</p>
+    <div class="plan-box">
+      <div class="plan-name">Plano Pro</div>
+      <div class="plan-price">R$ 59,90<span>/mês</span></div>
+      <ul class="plan-features">
+        <li><i class="ti ti-check"></i> Agendamentos ilimitados</li>
+        <li><i class="ti ti-check"></i> CRM completo com segmentação</li>
+        <li><i class="ti ti-check"></i> Dashboard financeiro em tempo real</li>
+        <li><i class="ti ti-check"></i> Serviços e preços editáveis</li>
+        <li><i class="ti ti-check"></i> Sincronização com app do cliente</li>
+        <li><i class="ti ti-check"></i> Notificações e lembretes</li>
+      </ul>
+    </div>
+    <button class="btn-stripe" onclick="goToStripe()"><i class="ti ti-credit-card"></i> Assinar agora — R$ 59,90/mês</button>
+    <p style="font-size:11px;color:var(--text3);margin-top:10px">Pagamento seguro via Stripe. Cancele quando quiser.</p>
+    <button class="btn-logout" onclick="logout()"><i class="ti ti-logout"></i> Sair da conta</button>
+  </div>
+</div>
+
+<!-- ===== MAIN APP ===== -->
+<div class="screen" id="screen-app">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="topbar-logo"><i class="ti ti-sparkles"></i></div>
+      <div>
+        <div style="font-size:15px;font-weight:600" id="tb-company">Nail Studio Pro</div>
+        <div style="font-size:11px;opacity:.8" id="tb-name">Profissional</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="trial-pill" id="trial-pill"><i class="ti ti-gift"></i> <span id="trial-label">7 dias</span></div>
+      <div class="avatar-btn" id="avatar-btn" onclick="showTab('config')">?</div>
+    </div>
+  </div>
+  <nav class="nav-bar">
+    <div class="nav-item active" onclick="showTab('dashboard')" data-tab="dashboard"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+    <div class="nav-item" onclick="showTab('agenda')" data-tab="agenda"><i class="ti ti-calendar"></i> Agenda</div>
+    <div class="nav-item" onclick="showTab('clientes')" data-tab="clientes"><i class="ti ti-users"></i> Clientes</div>
+    <div class="nav-item" onclick="showTab('financeiro')" data-tab="financeiro"><i class="ti ti-chart-bar"></i> Financeiro</div>
+    <div class="nav-item" onclick="showTab('servicos')" data-tab="servicos"><i class="ti ti-scissors"></i> Serviços</div>
+    <div class="nav-item" onclick="showTab('config')" data-tab="config"><i class="ti ti-settings"></i> Perfil</div>
+  </nav>
+  <div class="app-content">
+
+    <!-- DASHBOARD -->
+    <div class="tab active" id="tab-dashboard">
+      <div class="metrics" id="dash-metrics"></div>
+      <div class="dash-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-clock"></i> Próximos agendamentos</div>
+          <div id="dash-upcoming"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-chart-bar"></i> Receita — últimos 7 dias</div>
+          <div class="bar-chart" id="dash-chart"></div>
+          <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:12px" id="dash-stats"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px">
+        <div class="card-title"><i class="ti ti-alert-circle"></i> CRM — Alertas</div>
+        <div id="dash-alerts" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px"></div>
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="tab" id="tab-agenda">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px">
+          <div style="display:flex;align-items:center;gap:10px">
+            <button class="icon-btn" onclick="changeDay(-1)"><i class="ti ti-chevron-left"></i></button>
+            <span style="font-size:14px;font-weight:600" id="agenda-date-label">Hoje</span>
+            <button class="icon-btn" onclick="changeDay(1)"><i class="ti ti-chevron-right"></i></button>
+          </div>
+          <button class="btn-new" onclick="openApptModal()"><i class="ti ti-plus"></i> Novo agendamento</button>
+        </div>
+        <div class="day-grid" id="day-grid"></div>
+        <div class="agenda-slots" id="agenda-slots"></div>
+      </div>
+    </div>
+
+    <!-- CLIENTES CRM -->
+    <div class="tab" id="tab-clientes">
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <input type="text" id="client-search" placeholder="Buscar cliente..." oninput="renderClients()" style="flex:1;min-width:160px;padding:9px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;outline:none"/>
+        <button class="btn-new" onclick="openClientModal()"><i class="ti ti-user-plus"></i> Nova cliente</button>
+      </div>
+      <div class="card" style="overflow-x:auto">
+        <table class="crm-table">
+          <thead><tr><th>Cliente</th><th>Último atend.</th><th>Visitas</th><th>Total gasto</th><th>Categoria</th><th>Avaliação</th></tr></thead>
+          <tbody id="clients-tbody"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-target"></i> Segmentação CRM</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px" id="crm-seg"></div>
+      </div>
+    </div>
+
+    <!-- FINANCEIRO -->
+    <div class="tab" id="tab-financeiro">
+      <div class="metrics" id="fin-metrics"></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-scissors"></i> Serviços mais rentáveis</div>
+          <div id="fin-services"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><i class="ti ti-calendar-stats"></i> Projeção e metas</div>
+          <div id="fin-projection"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:0">
+        <div class="card-title"><i class="ti ti-list"></i> Todos os agendamentos</div>
+        <div style="overflow-x:auto"><table class="crm-table"><thead><tr><th>Cliente</th><th>Serviço</th><th>Data</th><th>Horário</th><th>Valor</th><th>Status</th></tr></thead><tbody id="all-appts-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- SERVIÇOS -->
+    <div class="tab" id="tab-servicos">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <div>
+            <div style="font-size:16px;font-weight:700">Meus Serviços</div>
+            <div style="font-size:12px;color:var(--text2);margin-top:3px">Edite preços e nomes — as clientes verão as alterações na hora.</div>
+          </div>
+        </div>
+        <div id="service-list"></div>
+        <button class="btn-add-svc" onclick="openServiceModal(null)"><i class="ti ti-plus"></i> Adicionar novo serviço</button>
+      </div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="tab" id="tab-config">
+      <div class="profile-header">
+        <div class="profile-av" id="cfg-av">?</div>
+        <div style="font-size:18px;font-weight:700" id="cfg-name">—</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:3px" id="cfg-company">—</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px" id="cfg-email">—</div>
+        <div style="margin-top:14px;display:flex;gap:10px;justify-content:center">
+          <button class="btn-outline" onclick="openProfileModal()"><i class="ti ti-edit"></i> Editar perfil</button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-bell"></i> Notificações</div>
+        <div class="config-row"><span style="font-weight:500">Lembrete 1h antes</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+        <div class="config-row"><span style="font-weight:500">Confirmação automática</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+        <div class="config-row"><span style="font-weight:500">Retorno (30 dias sem agendar)</span><div class="toggle" onclick="this.classList.toggle('off')"></div></div>
+        <div class="config-row"><span style="font-weight:500">Aniversários de clientes</span><div class="toggle off" onclick="this.classList.toggle('off')"></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-crown"></i> Plano e assinatura</div>
+        <div id="plan-block"></div>
+      </div>
+      <div class="card">
+        <div class="card-title"><i class="ti ti-link"></i> Link público de agendamento</div>
+        <div style="background:var(--bg);border-radius:10px;padding:12px;font-size:13px;color:var(--text2);display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--border)">
+          <span id="pub-link">nailpro.app/profissional</span>
+          <button class="icon-btn" onclick="copyLink()"><i class="ti ti-copy"></i></button>
+        </div>
+      </div>
+      <button class="btn-logout" onclick="logout()"><i class="ti ti-logout"></i> Sair da conta</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===== MODALS ===== -->
+<div class="modal-bg" id="modal-service">
+  <div class="modal">
+    <h3 id="svc-modal-title">Novo serviço</h3>
+    <div class="form-group"><label>Ícone (emoji)</label><input type="text" id="svc-icon" placeholder="💅" maxlength="4"/></div>
+    <div class="form-group"><label>Nome do serviço</label><input type="text" id="svc-name" placeholder="Ex: Manicure simples"/></div>
+    <div class="form-group"><label>Preço (R$)</label><input type="number" id="svc-price" placeholder="45" min="0" step="0.01"/></div>
+    <div class="form-group"><label>Duração</label><input type="text" id="svc-dur" placeholder="Ex: 45 min"/></div>
+    <div class="form-group"><label>Descrição (opcional)</label><input type="text" id="svc-desc" placeholder="Ex: Inclui cutilagem e esmaltação"/></div>
+    <input type="hidden" id="svc-idx" value="-1"/>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+      <button class="btn-save" onclick="saveService()">Salvar serviço</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-appt">
+  <div class="modal">
+    <h3>Novo agendamento</h3>
+    <div class="form-group"><label>Nome da cliente</label><input type="text" id="appt-client" placeholder="Ex: Ana Lima"/></div>
+    <div class="form-group"><label>Serviço</label><select id="appt-service" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);background:var(--surface);outline:none"></select></div>
+    <div class="form-group"><label>Data</label><input type="date" id="appt-date"/></div>
+    <div class="form-group"><label>Horário</label><select id="appt-time" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);background:var(--surface);outline:none">
+      <option>08:00</option><option>08:30</option><option>09:00</option><option>09:30</option>
+      <option>10:00</option><option>10:30</option><option>11:00</option><option>11:30</option>
+      <option>13:00</option><option>13:30</option><option>14:00</option><option>14:30</option>
+      <option>15:00</option><option>15:30</option><option>16:00</option><option>16:30</option>
+      <option>17:00</option><option>17:30</option><option>18:00</option><option>18:30</option>
+    </select></div>
+    <div class="form-group"><label>Status</label><select id="appt-status" style="width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:14px;color:var(--text);background:var(--surface);outline:none">
+      <option value="pendente">Pendente</option>
+      <option value="confirmado">Confirmado</option>
+      <option value="concluido">Concluído</option>
+      <option value="cancelado">Cancelado</option>
+    </select></div>
+    <input type="hidden" id="appt-idx" value="-1"/>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+      <button class="btn-save" onclick="saveAppt()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-client">
+  <div class="modal">
+    <h3>Nova cliente</h3>
+    <div class="form-group"><label>Nome completo</label><input type="text" id="cli-name" placeholder="Ex: Fernanda Costa"/></div>
+    <div class="form-group"><label>WhatsApp</label><input type="text" id="cli-phone" placeholder="(21) 99999-0000"/></div>
+    <div class="form-group"><label>Data de nascimento</label><input type="date" id="cli-birth"/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+      <button class="btn-save" onclick="saveClient()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-profile">
+  <div class="modal">
+    <h3>Editar perfil</h3>
+    <div class="form-group"><label>Seu nome</label><input type="text" id="edit-name"/></div>
+    <div class="form-group"><label>Nome do studio / negócio</label><input type="text" id="edit-company"/></div>
+    <div class="form-group"><label>Cidade</label><input type="text" id="edit-city"/></div>
+    <div class="form-group"><label>WhatsApp</label><input type="text" id="edit-phone"/></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModals()">Cancelar</button>
+      <button class="btn-save" onclick="saveProfile()">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-bg" id="modal-appt-detail">
+  <div class="modal">
+    <h3>Detalhes do agendamento</h3>
+    <div id="appt-detail-body"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModals()">Fechar</button>
+      <button class="btn-save" id="appt-detail-confirm" onclick="">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="notif" id="notif"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// SHARED DATA LAYER — chave compartilhada com o app do cliente
+// ═══════════════════════════════════════════════════════════
+const SHARED_KEY    = 'nailstudio_shared';   // lido/escrito por AMBOS os apps
+const SESSION_KEY   = 'nailpro_session';     // só do app da profissional
+const ACCOUNTS_KEY  = 'nailpro_accounts';    // contas de e-mail
+const STRIPE_URL    = 'https://buy.stripe.com/8x29ATgd12o8gBWcb11Fe08';
+const TRIAL_DAYS    = 7;
+const SUB_DAYS      = 30;
+
+// Dados compartilhados — lidos pelo app do cliente também
+let shared = {
+  services: [],   // lista de serviços editáveis (nome, preço, dur, icon)
+  appts: [],      // todos os agendamentos
+  clients: [],    // clientes cadastrados
+  studio: {       // dados do studio visíveis para o cliente
+    name: '',
+    company: '',
+    city: '',
+    phone: '',
+    rating: 4.9,
+    totalReviews: 0
+  }
+};
+
+// Dados só da sessão da profissional
+let session = {
+  user: null,
+  trialStart: null,
+  subStart: null
+};
+
+// ─── Persistência ───────────────────────────────────────────
+function loadAll() {
+  try {
+    const s = localStorage.getItem(SHARED_KEY);
+    if (s) shared = JSON.parse(s);
+  } catch(e) {}
+  try {
+    const s = localStorage.getItem(SESSION_KEY);
+    if (s) session = JSON.parse(s);
+  } catch(e) {}
+  // Garantir arrays existem
+  if (!Array.isArray(shared.services)) shared.services = [];
+  if (!Array.isArray(shared.appts))    shared.appts = [];
+  if (!Array.isArray(shared.clients))  shared.clients = [];
+  if (!shared.studio) shared.studio = {};
+}
+
+function saveShared() {
+  localStorage.setItem(SHARED_KEY, JSON.stringify(shared));
+  // Sync accounts store too
+  if (session.user && session.user.email) {
+    try {
+      const raw = localStorage.getItem(ACCOUNTS_KEY);
+      let acc = {};
+      try { acc = JSON.parse(raw) || {}; } catch(e) {}
+      if (acc[session.user.email]) {
+        acc[session.user.email].shared = JSON.parse(JSON.stringify(shared));
+        localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(acc));
+      }
+    } catch(e) {}
+  }
+}
+
+function saveSession() {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+}
+
+// ─── Acesso / assinatura ────────────────────────────────────
+function getStatus() {
+  if (!session.user) return 'auth';
+  if (!session.user.name || !session.user.company) return 'setup';
+  const now = Date.now();
+  if (!session.trialStart) { session.trialStart = now; saveSession(); }
+  if (session.subStart) {
+    const days = (now - session.subStart) / 864e5;
+    return days < SUB_DAYS ? 'app' : 'paywall_renewal';
+  }
+  const days = (now - session.trialStart) / 864e5;
+  return days < TRIAL_DAYS ? 'app' : 'paywall_trial';
+}
+
+function getDaysLeft() {
+  const now = Date.now();
+  if (session.subStart) return Math.max(0, Math.ceil(SUB_DAYS - (now - session.subStart) / 864e5));
+  if (session.trialStart) return Math.max(0, Math.ceil(TRIAL_DAYS - (now - session.trialStart) / 864e5));
+  return TRIAL_DAYS;
+}
+
+// ─── Roteamento ─────────────────────────────────────────────
+function route() {
+  const st = getStatus();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  if (st === 'auth') {
+    document.getElementById('screen-auth').classList.add('active');
+    autofillEmail();
+  } else if (st === 'setup') {
+    document.getElementById('screen-setup').classList.add('active');
+    prefillSetup();
+  } else if (st === 'paywall_trial' || st === 'paywall_renewal') {
+    document.getElementById('pw-title').textContent = st === 'paywall_trial' ? 'Período gratuito encerrado' : 'Renovação necessária';
+    document.getElementById('pw-sub').textContent = st === 'paywall_trial'
+      ? 'Seus 7 dias grátis acabaram. Assine para continuar sem perder seus dados.'
+      : 'Sua assinatura de 30 dias venceu. Renove para continuar.';
+    document.getElementById('screen-paywall').classList.add('active');
+  } else {
+    document.getElementById('screen-app').classList.add('active');
+    loadApp();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════════════════════
+function autofillEmail() {
+  try {
+    const raw = localStorage.getItem(ACCOUNTS_KEY);
+    if (!raw) return;
+    const acc = JSON.parse(raw);
+    const emails = Object.keys(acc);
+    if (emails.length > 0) {
+      document.getElementById('auth-email').value = emails[emails.length - 1];
+      document.getElementById('auth-btn').textContent = 'Entrar';
+    }
+  } catch(e) {}
+}
+
+function loginEmail() {
+  const email = document.getElementById('auth-email').value.trim();
+  const pass  = document.getElementById('auth-pass').value;
+  if (!email.includes('@')) { showNotif('E-mail inválido.', 1); return; }
+  if (pass.length < 6) { showNotif('Senha precisa ter 6+ caracteres.', 1); return; }
+  const hash = btoa(unescape(encodeURIComponent(email + ':' + pass)));
+  let acc = {};
+  try { acc = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '{}'); } catch(e) {}
+  if (acc[email]) {
+    if (acc[email].hash !== hash) { showNotif('Senha incorreta.', 1); return; }
+    // Restore session and shared
+    session = acc[email].session || session;
+    shared  = acc[email].shared  || shared;
+    if (!Array.isArray(shared.services)) shared.services = [];
+    if (!Array.isArray(shared.appts))    shared.appts = [];
+    if (!Array.isArray(shared.clients))  shared.clients = [];
+    saveShared(); saveSession();
+    showNotif('Bem-vinda de volta! 👋');
+  } else {
+    session.user = { email, name: '', company: '', city: '', phone: '', initials: '??' };
+    acc[email] = { hash, session: JSON.parse(JSON.stringify(session)), shared: JSON.parse(JSON.stringify(shared)) };
+    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(acc));
+    saveSession();
+  }
+  route();
+}
+
+function forgotPassword() {
+  const email = document.getElementById('auth-email').value.trim();
+  if (!email.includes('@')) { showNotif('Digite seu e-mail acima primeiro.', 1); return; }
+  let acc = {};
+  try { acc = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '{}'); } catch(e) {}
+  if (!acc[email]) { showNotif('E-mail não encontrado.', 1); return; }
+  const np = prompt('Nova senha (mínimo 6 caracteres):');
+  if (!np || np.length < 6) { showNotif('Senha muito curta.', 1); return; }
+  acc[email].hash = btoa(unescape(encodeURIComponent(email + ':' + np)));
+  localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(acc));
+  showNotif('Senha redefinida! Faça login.');
+}
+
+function logout() {
+  session.user = null;
+  saveSession();
+  route();
+}
+
+// ─── Setup ──────────────────────────────────────────────────
+function prefillSetup() {
+  if (session.user && session.user.name) document.getElementById('setup-name').value = session.user.name;
+}
+
+function finishSetup() {
+  const name    = document.getElementById('setup-name').value.trim();
+  const company = document.getElementById('setup-company').value.trim();
+  const city    = document.getElementById('setup-city').value.trim();
+  const phone   = document.getElementById('setup-phone').value.trim();
+  if (!name)    { showNotif('Informe seu nome.', 1); return; }
+  if (!company) { showNotif('Informe o nome do studio.', 1); return; }
+  session.user = { ...session.user, name, company, city, phone, initials: getInitials(name) };
+  session.trialStart = Date.now();
+  // Studio info shared with client app
+  shared.studio = { name, company, city, phone, rating: 4.9, totalReviews: 0 };
+  // Default services if first time
+  if (shared.services.length === 0) {
+    shared.services = [
+      { id: uid(), icon: '💅', name: 'Manicure simples',      price: 45,  dur: '45 min', desc: 'Cutilagem e esmaltação' },
+      { id: uid(), icon: '✨', name: 'Manicure + Pedicure',   price: 85,  dur: '1h30',   desc: 'Mãos e pés completo' },
+      { id: uid(), icon: '💧', name: 'Esmaltação em gel',     price: 70,  dur: '1h',     desc: 'Gel de longa duração' },
+      { id: uid(), icon: '💎', name: 'Alongamento gel',       price: 120, dur: '2h',     desc: 'Unhas longas em gel' },
+      { id: uid(), icon: '🎨', name: 'Nail art',              price: 90,  dur: '1h30',   desc: 'Arte em unhas personalizada' },
+      { id: uid(), icon: '🔧', name: 'Remoção de gel',        price: 40,  dur: '30 min', desc: 'Remoção sem danos' },
+    ];
+  }
+  saveShared(); saveSession();
+  // Sync to accounts
+  syncToAccount();
+  route();
+}
+
+function syncToAccount() {
+  try {
+    const email = session.user && session.user.email;
+    if (!email) return;
+    let acc = {};
+    try { acc = JSON.parse(localStorage.getItem(ACCOUNTS_KEY) || '{}'); } catch(e) {}
+    if (acc[email]) {
+      acc[email].session = JSON.parse(JSON.stringify(session));
+      acc[email].shared  = JSON.parse(JSON.stringify(shared));
+      localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(acc));
+    }
+  } catch(e) {}
+}
+
+// ─── Stripe ─────────────────────────────────────────────────
+function goToStripe() {
+  window.open(STRIPE_URL, '_blank');
+  setTimeout(() => {
+    if (!document.getElementById('paid-btn')) {
+      const btn = document.createElement('button');
+      btn.id = 'paid-btn';
+      btn.className = 'btn-outline';
+      btn.style.cssText = 'margin-top:12px;width:100%;justify-content:center';
+      btn.innerHTML = '<i class="ti ti-check"></i> Já paguei — acessar app';
+      btn.onclick = activateSub;
+      document.querySelector('.paywall-card').appendChild(btn);
+    }
+  }, 2000);
+}
+
+function activateSub() {
+  session.subStart = Date.now();
+  saveSession(); syncToAccount();
+  showNotif('Assinatura ativada! Bem-vinda 🎉');
+  setTimeout(route, 800);
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOAD APP
+// ═══════════════════════════════════════════════════════════
+let agendaOffset = 0; // dias a partir de hoje
+
+function loadApp() {
+  const u = session.user;
+  document.getElementById('tb-company').textContent  = u.company || 'Nail Studio Pro';
+  document.getElementById('tb-name').textContent     = u.name    || 'Profissional';
+  document.getElementById('avatar-btn').textContent  = u.initials || '??';
+  document.getElementById('cfg-av').textContent      = u.initials || '??';
+  document.getElementById('cfg-name').textContent    = u.name    || '—';
+  document.getElementById('cfg-company').textContent = u.company || '—';
+  document.getElementById('cfg-email').textContent   = u.email   || '—';
+  document.getElementById('pub-link').textContent    = 'nailpro.app/' + slug(u.name || 'profissional');
+  // Trial pill
+  const days = getDaysLeft();
+  const pill = document.getElementById('trial-pill');
+  if (!session.subStart) {
+    pill.innerHTML = '<i class="ti ti-gift"></i> <span>' + days + ' dias grátis</span>';
+  } else {
+    pill.innerHTML = '<i class="ti ti-crown"></i> <span>Pro · ' + days + 'd</span>';
+  }
+  renderPlanBlock();
+  renderServices();
+  renderDashboard();
+  renderAgenda();
+  renderClients();
+  renderFinanceiro();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD — cálculos reais dos agendamentos
+// ═══════════════════════════════════════════════════════════
+function renderDashboard() {
+  const today = dateStr(new Date());
+  const appts = shared.appts;
+
+  // Métricas
+  const todayAppts   = appts.filter(a => a.date === today && a.status !== 'cancelado');
+  const monthAppts   = appts.filter(a => a.date && a.date.slice(0,7) === today.slice(0,7) && a.status !== 'cancelado');
+  const doneAppts    = appts.filter(a => a.status === 'concluido');
+  const monthRevenue = monthAppts.filter(a => a.status === 'concluido').reduce((s, a) => s + (a.price || 0), 0);
+  const totalRevenue = doneAppts.reduce((s, a) => s + (a.price || 0), 0);
+  const clientSet    = new Set(appts.map(a => norm(a.clientName)));
+  const tickets      = doneAppts.length ? (totalRevenue / doneAppts.length) : 0;
+
+  // Client frequency for return rate
+  const freq = {};
+  appts.forEach(a => {
+    const k = norm(a.clientName);
+    freq[k] = (freq[k] || 0) + 1;
+  });
+  const returning = Object.values(freq).filter(v => v > 1).length;
+  const returnRate = clientSet.size > 0 ? Math.round((returning / clientSet.size) * 100) : 0;
+
+  document.getElementById('dash-metrics').innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-calendar-check"></i> Hoje</div>
+      <div class="metric-value">${todayAppts.length}</div>
+      <div class="metric-sub">${todayAppts.filter(a=>a.status==='confirmado').length} confirmados</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-cash"></i> Receita do mês</div>
+      <div class="metric-value">R$ ${fmt(monthRevenue)}</div>
+      <div class="metric-sub metric-up">${monthAppts.filter(a=>a.status==='concluido').length} serviços</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-users"></i> Clientes únicos</div>
+      <div class="metric-value">${clientSet.size}</div>
+      <div class="metric-sub">${shared.clients.length} cadastradas</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-repeat"></i> Taxa de retorno</div>
+      <div class="metric-value">${returnRate}%</div>
+      <div class="metric-sub metric-up">Fidelizadas</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-ticket"></i> Ticket médio</div>
+      <div class="metric-value">R$ ${fmt(tickets)}</div>
+      <div class="metric-sub">${doneAppts.length} serviços feitos</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-x"></i> Cancelamentos</div>
+      <div class="metric-value" style="color:var(--coral)">${appts.filter(a=>a.status==='cancelado').length}</div>
+      <div class="metric-sub metric-down">${appts.length ? Math.round(appts.filter(a=>a.status==='cancelado').length/appts.length*100) : 0}% do total</div>
+    </div>
+  `;
+
+  // Próximos agendamentos (a partir de hoje, não cancelados)
+  const upcoming = appts
+    .filter(a => a.date >= today && a.status !== 'cancelado')
+    .sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time))
+    .slice(0, 5);
+
+  const colors = ['av-pink','av-teal','av-purple','av-amber'];
+  document.getElementById('dash-upcoming').innerHTML = upcoming.length ? upcoming.map((a,i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+      <div class="av-sm ${colors[i%4]}">${getInitials(a.clientName)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600">${esc(a.clientName)}</div>
+        <div style="font-size:11px;color:var(--text2)">${esc(a.serviceName)}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div style="font-size:11px;color:var(--text2)">${fmtDate(a.date)} ${a.time}</div>
+        <div style="font-size:13px;font-weight:700;color:var(--teal)">R$ ${fmt(a.price)}</div>
+      </div>
+    </div>
+  `).join('') : '<div class="empty-state"><i class="ti ti-calendar-off"></i>Nenhum agendamento próximo</div>';
+
+  // Gráfico — últimos 7 dias
+  renderDashChart();
+
+  // Stats
+  const topSvc = topService();
+  document.getElementById('dash-stats').innerHTML = `
+    <div class="fin-row"><span style="color:var(--text2)">Serviço top</span><span style="font-weight:600">${topSvc || '—'}</span></div>
+    <div class="fin-row"><span style="color:var(--text2)">Total agendamentos</span><span style="font-weight:600">${appts.length}</span></div>
+    <div class="fin-row"><span style="color:var(--text2)">Receita total</span><span style="font-weight:600;color:var(--teal)">R$ ${fmt(totalRevenue)}</span></div>
+  `;
+
+  // Alertas CRM
+  const today30 = new Date(); today30.setDate(today30.getDate() - 30);
+  const d30 = dateStr(today30);
+  const clientsLast30 = new Set(appts.filter(a => a.date >= d30).map(a => norm(a.clientName)));
+  const allClients = new Set(appts.map(a => norm(a.clientName)));
+  const pending30 = [...allClients].filter(c => !clientsLast30.has(c)).length;
+
+  const thisWeekStart = new Date(); thisWeekStart.setDate(thisWeekStart.getDate() - thisWeekStart.getDay());
+  const thisWeekEnd = new Date(thisWeekStart); thisWeekEnd.setDate(thisWeekStart.getDate() + 6);
+  const birthdays = shared.clients.filter(c => {
+    if (!c.birth) return false;
+    const bDay = new Date(c.birth);
+    const thisYear = new Date();
+    const bd = new Date(thisYear.getFullYear(), bDay.getMonth(), bDay.getDate());
+    return bd >= thisWeekStart && bd <= thisWeekEnd;
+  }).length;
+
+  document.getElementById('dash-alerts').innerHTML = `
+    <div style="background:var(--amber-light);border-radius:10px;padding:12px">
+      <div style="font-size:11px;color:var(--amber);font-weight:600;margin-bottom:4px"><i class="ti ti-clock-x"></i> Retorno pendente</div>
+      <div style="font-size:22px;font-weight:700;color:var(--amber)">${pending30}</div>
+      <div style="font-size:12px;color:var(--amber)">clientes sem agendar há 30+ dias</div>
+    </div>
+    <div style="background:var(--teal-light);border-radius:10px;padding:12px">
+      <div style="font-size:11px;color:var(--teal);font-weight:600;margin-bottom:4px"><i class="ti ti-gift"></i> Aniversariantes</div>
+      <div style="font-size:22px;font-weight:700;color:var(--teal)">${birthdays}</div>
+      <div style="font-size:12px;color:var(--teal)">clientes aniversariam essa semana</div>
+    </div>
+    <div style="background:var(--pink-light);border-radius:10px;padding:12px">
+      <div style="font-size:11px;color:var(--pink);font-weight:600;margin-bottom:4px"><i class="ti ti-crown"></i> Novos este mês</div>
+      <div style="font-size:22px;font-weight:700;color:var(--pink)">${new Set(monthAppts.map(a=>norm(a.clientName))).size}</div>
+      <div style="font-size:12px;color:var(--pink)">clientes atendidas este mês</div>
+    </div>
+  `;
+}
+
+function renderDashChart() {
+  const el = document.getElementById('dash-chart');
+  const data = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = dateStr(d);
+    const days = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    const val = shared.appts
+      .filter(a => a.date === key && a.status === 'concluido')
+      .reduce((s, a) => s + (a.price || 0), 0);
+    data.push({ d: days[d.getDay()], v: val });
+  }
+  const max = Math.max(...data.map(x => x.v), 1);
+  el.innerHTML = data.map(d => `
+    <div class="bar-wrap">
+      <div style="font-size:9px;color:var(--text3)">${d.v > 0 ? 'R$'+d.v : ''}</div>
+      <div class="bar ${d.v === max && d.v > 0 ? 'best' : ''}" style="height:${Math.round((d.v/max)*80)}px"></div>
+      <div class="bar-label">${d.d}</div>
+    </div>
+  `).join('');
+}
+
+function topService() {
+  const count = {};
+  shared.appts.filter(a => a.status === 'concluido').forEach(a => {
+    count[a.serviceName] = (count[a.serviceName] || 0) + 1;
+  });
+  const entries = Object.entries(count);
+  if (!entries.length) return null;
+  return entries.sort((a,b) => b[1]-a[1])[0][0];
+}
+
+// ═══════════════════════════════════════════════════════════
+// AGENDA
+// ═══════════════════════════════════════════════════════════
+const DAYS_PT = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+const MONTHS_PT = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+function renderAgenda() {
+  const base = new Date();
+  base.setDate(base.getDate() + agendaOffset);
+  const todayKey = dateStr(base);
+
+  // Week strip (Mon–Sun of the selected day's week)
+  const dow = base.getDay();
+  const monday = new Date(base);
+  monday.setDate(base.getDate() - (dow === 0 ? 6 : dow - 1));
+
+  document.getElementById('agenda-date-label').textContent =
+    base.getDate() + ' de ' + MONTHS_PT[base.getMonth()] + ' de ' + base.getFullYear();
+
+  const grid = document.getElementById('day-grid');
+  grid.innerHTML = '';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday); d.setDate(monday.getDate() + i);
+    const key = dateStr(d);
+    const isSelected = key === todayKey;
+    const hasDot = shared.appts.some(a => a.date === key && a.status !== 'cancelado');
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (isSelected ? ' today' : '');
+    cell.innerHTML = `
+      <div class="day-cell-name">${DAYS_PT[d.getDay()]}</div>
+      <div class="day-cell-num">${d.getDate()}</div>
+      ${hasDot ? '<div class="day-dot"></div>' : '<div style="height:7px"></div>'}
+    `;
+    const offset = Math.round((d - new Date(dateStr(new Date()))) / 864e5);
+    cell.onclick = () => { agendaOffset = offset; renderAgenda(); };
+    grid.appendChild(cell);
+  }
+
+  // Time slots
+  const hours = ['08:00','08:30','09:00','09:30','10:00','10:30','11:00','11:30',
+                  '12:00','13:00','13:30','14:00','14:30','15:00','15:30',
+                  '16:00','16:30','17:00','17:30','18:00','18:30','19:00'];
+  const dayAppts = shared.appts
+    .filter(a => a.date === todayKey && a.status !== 'cancelado')
+    .sort((a,b) => a.time.localeCompare(b.time));
+
+  const clsMap = ['','c2','c3','c4'];
+  document.getElementById('agenda-slots').innerHTML = hours.map(h => {
+    const appt = dayAppts.find(a => a.time === h);
+    const idx  = appt ? shared.appts.indexOf(appt) : -1;
+    const cls  = appt ? clsMap[shared.appts.filter(a=>a.status!=='cancelado').indexOf(appt) % 4] : '';
+    const stBadge = appt ? `<span style="font-size:10px;color:var(--text2)">${statusLabel(appt.status)}</span>` : '';
+    return `<div class="slot-row">
+      <div class="slot-time">${h}</div>
+      <div class="slot-line"></div>
+      <div class="slot-body">${appt
+        ? `<div class="appt-block ${cls}" onclick="openApptDetail(${idx})">
+            <div class="appt-block-name">${esc(appt.clientName)}</div>
+            <div class="appt-block-info">${esc(appt.serviceName)} · R$ ${fmt(appt.price)}</div>
+            ${stBadge}
+          </div>`
+        : '<div class="slot-empty"></div>'
+      }</div>
+    </div>`;
+  }).join('');
+}
+
+function changeDay(dir) { agendaOffset += dir; renderAgenda(); }
+
+// ═══════════════════════════════════════════════════════════
+// CLIENTES CRM
+// ═══════════════════════════════════════════════════════════
+function renderClients() {
+  const q = (document.getElementById('client-search') || {}).value || '';
+  const appts = shared.appts;
+
+  // Build client stats from appts + manual list
+  const statsMap = {};
+  appts.forEach(a => {
+    const k = norm(a.clientName);
+    if (!statsMap[k]) statsMap[k] = { name: a.clientName, visitas: 0, total: 0, ultimo: '' };
+    if (a.status === 'concluido') {
+      statsMap[k].visitas++;
+      statsMap[k].total += a.price || 0;
+    }
+    if (a.date > statsMap[k].ultimo) statsMap[k].ultimo = a.date;
+  });
+
+  // Merge manual clients
+  shared.clients.forEach(c => {
+    const k = norm(c.nome);
+    if (!statsMap[k]) statsMap[k] = { name: c.nome, visitas: 0, total: 0, ultimo: '—' };
+  });
+
+  let rows = Object.values(statsMap);
+  if (q) rows = rows.filter(r => r.name.toLowerCase().includes(q.toLowerCase()));
+  rows.sort((a,b) => b.total - a.total);
+
+  const colors = ['av-pink','av-teal','av-purple','av-amber'];
+  const tb = document.getElementById('clients-tbody');
+  tb.innerHTML = rows.length ? rows.map((r,i) => {
+    const cat = r.visitas >= 5 ? 'VIP' : r.visitas >= 2 ? 'Regular' : 'Novo';
+    const catCls = cat === 'VIP' ? 'badge-vip' : cat === 'Regular' ? 'badge-reg' : 'badge-new';
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px">
+        <div class="av-sm ${colors[i%4]}">${getInitials(r.name)}</div>${esc(r.name)}
+      </div></td>
+      <td style="color:var(--text2)">${r.ultimo !== '—' ? fmtDate(r.ultimo) : '—'}</td>
+      <td style="text-align:center">${r.visitas}</td>
+      <td style="font-weight:600">R$ ${fmt(r.total)}</td>
+      <td><span class="badge ${catCls}">${cat}</span></td>
+      <td style="color:var(--pink)">★★★★★</td>
+    </tr>`;
+  }).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Nenhuma cliente ainda. Os dados aparecem automaticamente quando clientes agendarem.</td></tr>';
+
+  // Segmentação
+  const vip = rows.filter(r => r.visitas >= 5).length;
+  const reg = rows.filter(r => r.visitas >= 2 && r.visitas < 5).length;
+  const novo = rows.filter(r => r.visitas < 2).length;
+  document.getElementById('crm-seg').innerHTML = `
+    <div style="text-align:center;padding:14px;background:var(--purple-light);border-radius:12px">
+      <div style="font-size:26px;font-weight:700;color:var(--purple)">${vip}</div>
+      <div style="font-size:12px;color:var(--purple);margin-top:3px"><i class="ti ti-crown"></i> VIP (5+ visitas)</div>
+    </div>
+    <div style="text-align:center;padding:14px;background:var(--teal-light);border-radius:12px">
+      <div style="font-size:26px;font-weight:700;color:var(--teal)">${reg}</div>
+      <div style="font-size:12px;color:var(--teal);margin-top:3px"><i class="ti ti-refresh"></i> Regulares (2-4)</div>
+    </div>
+    <div style="text-align:center;padding:14px;background:var(--amber-light);border-radius:12px">
+      <div style="font-size:26px;font-weight:700;color:var(--amber)">${novo}</div>
+      <div style="font-size:12px;color:var(--amber);margin-top:3px"><i class="ti ti-star"></i> Novos (1 visita)</div>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════════════════
+// FINANCEIRO
+// ═══════════════════════════════════════════════════════════
+function renderFinanceiro() {
+  const appts  = shared.appts;
+  const done   = appts.filter(a => a.status === 'concluido');
+  const today  = dateStr(new Date());
+  const month  = today.slice(0,7);
+  const monthDone = done.filter(a => a.date && a.date.slice(0,7) === month);
+  const totalRev  = done.reduce((s,a) => s+(a.price||0), 0);
+  const monthRev  = monthDone.reduce((s,a) => s+(a.price||0), 0);
+  const expenses  = 59.90; // plataforma
+  const profit    = monthRev - expenses;
+  const avgTicket = done.length ? totalRev/done.length : 0;
+
+  document.getElementById('fin-metrics').innerHTML = `
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-cash"></i> Receita (mês atual)</div>
+      <div class="metric-value">R$ ${fmt(monthRev)}</div>
+      <div class="metric-sub metric-up">${monthDone.length} serviços concluídos</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-receipt"></i> Despesas</div>
+      <div class="metric-value">R$ ${fmt(expenses)}</div>
+      <div class="metric-sub metric-down">Assinatura da plataforma</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-trending-up"></i> Lucro líquido</div>
+      <div class="metric-value" style="color:var(--teal)">R$ ${fmt(profit)}</div>
+      <div class="metric-sub metric-up">Margem: ${monthRev > 0 ? Math.round(profit/monthRev*100) : 0}%</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-label"><i class="ti ti-ticket"></i> Ticket médio</div>
+      <div class="metric-value">R$ ${fmt(avgTicket)}</div>
+      <div class="metric-sub">${done.length} serviços no total</div>
+    </div>
+  `;
+
+  // Por serviço
+  const byService = {};
+  done.forEach(a => {
+    byService[a.serviceName] = (byService[a.serviceName] || 0) + (a.price || 0);
+  });
+  const svcEntries = Object.entries(byService).sort((a,b)=>b[1]-a[1]);
+  const maxSvc = svcEntries.length ? svcEntries[0][1] : 1;
+  const fillColors = ['var(--pink)','var(--teal)','var(--purple)','var(--amber)','var(--coral)'];
+  document.getElementById('fin-services').innerHTML = svcEntries.length ? svcEntries.slice(0,5).map(([name,val],i)=>`
+    <div class="progress-wrap">
+      <div class="progress-label"><span>${esc(name)}</span><span>R$ ${fmt(val)}</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${Math.round(val/maxSvc*100)}%;background:${fillColors[i%5]}"></div></div>
+    </div>
+  `).join('') : '<div class="empty-state"><i class="ti ti-chart-bar"></i>Dados aparecem após os primeiros serviços concluídos.</div>';
+
+  // Projeção
+  const monthsWithData = [...new Set(done.map(a => a.date && a.date.slice(0,7)))].filter(Boolean).length || 1;
+  const avgMonthly = totalRev / monthsWithData;
+  const projection = avgMonthly * 12;
+  const meta = 4000;
+  const progress = Math.min(100, Math.round(monthRev / meta * 100));
+  document.getElementById('fin-projection').innerHTML = `
+    <div class="fin-row"><span style="color:var(--text2)">Média mensal</span><span style="font-weight:600">R$ ${fmt(avgMonthly)}</span></div>
+    <div class="fin-row"><span style="color:var(--text2)">Projeção anual</span><span style="font-weight:600">R$ ${fmt(projection)}</span></div>
+    <div class="fin-row"><span style="color:var(--text2)">Meta mensal</span><span style="font-weight:600;color:var(--pink)">R$ ${fmt(meta)}</span></div>
+    <div class="progress-wrap" style="margin-top:8px">
+      <div class="progress-label"><span>Progresso da meta</span><span>${progress}%</span></div>
+      <div class="progress-track"><div class="progress-fill" style="width:${progress}%"></div></div>
+    </div>
+    <div class="fin-row"><span style="color:var(--text2)">Assinatura</span><span style="color:var(--coral)">- R$ 59,90/mês</span></div>
+    <div class="fin-row"><span style="color:var(--text2)">ROI da plataforma</span><span style="color:var(--teal);font-weight:700">${monthRev > 0 ? Math.round(monthRev/59.9) : '—'}x</span></div>
+  `;
+
+  // Tabela de todos os agendamentos
+  const allSorted = [...appts].sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
+  const stCls = { pendente:'badge-pend', confirmado:'badge-conf', concluido:'badge-done', cancelado:'badge-canc' };
+  document.getElementById('all-appts-tbody').innerHTML = allSorted.length ? allSorted.map(a=>`
+    <tr>
+      <td>${esc(a.clientName)}</td>
+      <td>${esc(a.serviceName)}</td>
+      <td style="color:var(--text2)">${fmtDate(a.date)}</td>
+      <td style="color:var(--text2)">${a.time}</td>
+      <td style="font-weight:600">R$ ${fmt(a.price)}</td>
+      <td><span class="badge ${stCls[a.status]||''}">${statusLabel(a.status)}</span></td>
+    </tr>
+  `).join('') : '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text3)">Nenhum agendamento ainda.</td></tr>';
+}
+
+// ═══════════════════════════════════════════════════════════
+// SERVIÇOS — editáveis e sincronizados com app do cliente
+// ═══════════════════════════════════════════════════════════
+function renderServices() {
+  const list = document.getElementById('service-list');
+  if (!list) return;
+  list.innerHTML = shared.services.length ? shared.services.map((s, i) => `
+    <div class="svc-item">
+      <div class="svc-icon">${s.icon || '💅'}</div>
+      <div class="svc-info">
+        <div class="svc-name">${esc(s.name)}</div>
+        <div class="svc-dur"><i class="ti ti-clock"></i> ${esc(s.dur)}${s.desc ? ' · '+esc(s.desc) : ''}</div>
+      </div>
+      <div class="svc-price">R$ ${Number(s.price).toFixed(2).replace('.',',')}</div>
+      <div class="svc-actions">
+        <button class="icon-btn" onclick="openServiceModal(${i})"><i class="ti ti-edit"></i></button>
+        <button class="icon-btn danger" onclick="deleteService(${i})"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+  `).join('') : '<div class="empty-state"><i class="ti ti-scissors"></i>Nenhum serviço cadastrado.</div>';
+
+  // Atualizar dropdown de novo agendamento
+  const sel = document.getElementById('appt-service');
+  if (sel) sel.innerHTML = shared.services.map(s =>
+    `<option value="${esc(s.id)}">${esc(s.icon)} ${esc(s.name)} — R$ ${Number(s.price).toFixed(2).replace('.',',')}</option>`
+  ).join('');
+}
+
+function openServiceModal(idx) {
+  document.getElementById('svc-modal-title').textContent = idx === null ? 'Novo serviço' : 'Editar serviço';
+  document.getElementById('svc-idx').value = idx === null ? -1 : idx;
+  if (idx === null) {
+    document.getElementById('svc-icon').value = '💅';
+    document.getElementById('svc-name').value = '';
+    document.getElementById('svc-price').value = '';
+    document.getElementById('svc-dur').value = '';
+    document.getElementById('svc-desc').value = '';
+  } else {
+    const s = shared.services[idx];
+    document.getElementById('svc-icon').value  = s.icon || '💅';
+    document.getElementById('svc-name').value  = s.name;
+    document.getElementById('svc-price').value = s.price;
+    document.getElementById('svc-dur').value   = s.dur;
+    document.getElementById('svc-desc').value  = s.desc || '';
+  }
+  document.getElementById('modal-service').classList.add('open');
+}
+
+function saveService() {
+  const name  = document.getElementById('svc-name').value.trim();
+  const price = parseFloat(document.getElementById('svc-price').value);
+  const dur   = document.getElementById('svc-dur').value.trim();
+  const icon  = document.getElementById('svc-icon').value.trim() || '💅';
+  const desc  = document.getElementById('svc-desc').value.trim();
+  const idx   = parseInt(document.getElementById('svc-idx').value);
+  if (!name)          { showNotif('Informe o nome do serviço.', 1); return; }
+  if (isNaN(price)||price<0) { showNotif('Preço inválido.', 1); return; }
+  if (!dur)           { showNotif('Informe a duração.', 1); return; }
+  if (idx === -1) {
+    shared.services.push({ id: uid(), icon, name, price, dur, desc });
+  } else {
+    shared.services[idx] = { ...shared.services[idx], icon, name, price, dur, desc };
+  }
+  saveShared(); syncToAccount();
+  renderServices();
+  closeModals();
+  showNotif(idx === -1 ? 'Serviço adicionado e visível para clientes!' : 'Serviço atualizado!');
+}
+
+function deleteService(idx) {
+  if (!confirm('Excluir "' + shared.services[idx].name + '"?')) return;
+  shared.services.splice(idx, 1);
+  saveShared(); syncToAccount();
+  renderServices();
+  showNotif('Serviço excluído.');
+}
+
+// ═══════════════════════════════════════════════════════════
+// AGENDAMENTOS — CRUD
+// ═══════════════════════════════════════════════════════════
+function openApptModal() {
+  document.getElementById('appt-idx').value = -1;
+  document.getElementById('appt-client').value = '';
+  document.getElementById('appt-date').value = dateStr(new Date());
+  document.getElementById('appt-status').value = 'confirmado';
+  renderServices(); // atualiza dropdown
+  document.getElementById('modal-appt').classList.add('open');
+}
+
+function saveAppt() {
+  const clientName = document.getElementById('appt-client').value.trim();
+  const serviceId  = document.getElementById('appt-service').value;
+  const date       = document.getElementById('appt-date').value;
+  const time       = document.getElementById('appt-time').value;
+  const status     = document.getElementById('appt-status').value;
+  const idx        = parseInt(document.getElementById('appt-idx').value);
+  if (!clientName) { showNotif('Informe o nome da cliente.', 1); return; }
+  if (!date)       { showNotif('Informe a data.', 1); return; }
+  const svc = shared.services.find(s => s.id === serviceId) || shared.services[0];
+  if (!svc)        { showNotif('Cadastre ao menos um serviço antes.', 1); return; }
+  const appt = {
+    id: idx === -1 ? uid() : (shared.appts[idx] && shared.appts[idx].id) || uid(),
+    clientName,
+    serviceName: svc.name,
+    serviceId: svc.id,
+    price: svc.price,
+    date, time, status,
+    source: 'pro', // marcado pela profissional
+    createdAt: idx === -1 ? Date.now() : shared.appts[idx].createdAt
+  };
+  if (idx === -1) {
+    shared.appts.push(appt);
+  } else {
+    shared.appts[idx] = appt;
+  }
+  saveShared(); syncToAccount();
+  closeModals();
+  renderAgenda(); renderDashboard(); renderFinanceiro(); renderClients();
+  showNotif('Agendamento salvo!');
+}
+
+function openApptDetail(idx) {
+  const a = shared.appts[idx];
+  if (!a) return;
+  const stCls = { pendente:'badge-pend', confirmado:'badge-conf', concluido:'badge-done', cancelado:'badge-canc' };
+  document.getElementById('appt-detail-body').innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="fin-row"><span style="color:var(--text2)">Cliente</span><span style="font-weight:600">${esc(a.clientName)}</span></div>
+      <div class="fin-row"><span style="color:var(--text2)">Serviço</span><span>${esc(a.serviceName)}</span></div>
+      <div class="fin-row"><span style="color:var(--text2)">Data</span><span>${fmtDate(a.date)}</span></div>
+      <div class="fin-row"><span style="color:var(--text2)">Horário</span><span>${a.time}</span></div>
+      <div class="fin-row"><span style="color:var(--text2)">Valor</span><span style="font-weight:700;color:var(--teal)">R$ ${fmt(a.price)}</span></div>
+      <div class="fin-row"><span style="color:var(--text2)">Status</span><span class="badge ${stCls[a.status]||''}">${statusLabel(a.status)}</span></div>
+      <div class="fin-row"><span style="color:var(--text2)">Origem</span><span>${a.source === 'client' ? '📱 App do cliente' : '💻 Profissional'}</span></div>
+    </div>
+    <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+      ${a.status !== 'confirmado' ? `<button onclick="updateApptStatus(${idx},'confirmado')" class="btn-outline"><i class="ti ti-check"></i> Confirmar</button>` : ''}
+      ${a.status !== 'concluido'  ? `<button onclick="updateApptStatus(${idx},'concluido')" class="btn-outline"><i class="ti ti-check-checks"></i> Concluir</button>` : ''}
+      ${a.status !== 'cancelado'  ? `<button onclick="updateApptStatus(${idx},'cancelado')" style="color:var(--coral);border-color:var(--coral)" class="btn-outline"><i class="ti ti-x"></i> Cancelar</button>` : ''}
+      <button onclick="editAppt(${idx})" class="btn-outline"><i class="ti ti-edit"></i> Editar</button>
+    </div>
+  `;
+  document.getElementById('appt-detail-confirm').style.display = 'none';
+  document.getElementById('modal-appt-detail').classList.add('open');
+}
+
+function updateApptStatus(idx, status) {
+  shared.appts[idx].status = status;
+  saveShared(); syncToAccount();
+  closeModals();
+  renderAgenda(); renderDashboard(); renderFinanceiro(); renderClients();
+  showNotif('Status atualizado: ' + statusLabel(status));
+}
+
+function editAppt(idx) {
+  const a = shared.appts[idx];
+  closeModals();
+  renderServices();
+  document.getElementById('appt-client').value = a.clientName;
+  document.getElementById('appt-date').value   = a.date;
+  document.getElementById('appt-time').value   = a.time;
+  document.getElementById('appt-status').value = a.status;
+  document.getElementById('appt-idx').value    = idx;
+  // Select correct service
+  const sel = document.getElementById('appt-service');
+  for (let i = 0; i < sel.options.length; i++) {
+    if (sel.options[i].value === a.serviceId) { sel.selectedIndex = i; break; }
+  }
+  document.getElementById('modal-appt').classList.add('open');
+}
+
+// ═══════════════════════════════════════════════════════════
+// CLIENTES — manual
+// ═══════════════════════════════════════════════════════════
+function openClientModal() {
+  document.getElementById('cli-name').value = '';
+  document.getElementById('cli-phone').value = '';
+  document.getElementById('cli-birth').value = '';
+  document.getElementById('modal-client').classList.add('open');
+}
+
+function saveClient() {
+  const nome = document.getElementById('cli-name').value.trim();
+  if (!nome) { showNotif('Informe o nome.', 1); return; }
+  shared.clients.push({
+    nome,
+    phone: document.getElementById('cli-phone').value.trim(),
+    birth: document.getElementById('cli-birth').value
+  });
+  saveShared(); syncToAccount();
+  renderClients();
+  closeModals();
+  showNotif('Cliente cadastrada!');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PERFIL
+// ═══════════════════════════════════════════════════════════
+function openProfileModal() {
+  const u = session.user;
+  document.getElementById('edit-name').value    = u.name || '';
+  document.getElementById('edit-company').value = u.company || '';
+  document.getElementById('edit-city').value    = u.city || '';
+  document.getElementById('edit-phone').value   = u.phone || '';
+  document.getElementById('modal-profile').classList.add('open');
+}
+
+function saveProfile() {
+  const name    = document.getElementById('edit-name').value.trim();
+  const company = document.getElementById('edit-company').value.trim();
+  if (!name)    { showNotif('Informe seu nome.', 1); return; }
+  if (!company) { showNotif('Informe o nome do studio.', 1); return; }
+  session.user = { ...session.user, name, company,
+    city:     document.getElementById('edit-city').value.trim(),
+    phone:    document.getElementById('edit-phone').value.trim(),
+    initials: getInitials(name)
+  };
+  shared.studio = { ...shared.studio, name, company,
+    city:  document.getElementById('edit-city').value.trim(),
+    phone: document.getElementById('edit-phone').value.trim()
+  };
+  saveShared(); saveSession(); syncToAccount();
+  closeModals();
+  loadApp();
+  showNotif('Perfil atualizado!');
+}
+
+function renderPlanBlock() {
+  const days = getDaysLeft();
+  const el = document.getElementById('plan-block');
+  if (!session.subStart) {
+    el.innerHTML = `
+      <div style="background:var(--amber-light);border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="font-size:13px;color:var(--amber);font-weight:600"><i class="ti ti-clock"></i> Período de teste</div>
+        <div style="font-size:13px;margin-top:4px">${days} dia(s) restantes do período grátis.</div>
+      </div>
+      <button class="btn-primary" onclick="goToStripe()" style="padding:12px"><i class="ti ti-crown"></i> Assinar — R$ 59,90/mês</button>
+    `;
+  } else {
+    const renewal = new Date(session.subStart + SUB_DAYS * 864e5);
+    el.innerHTML = `
+      <div style="background:var(--teal-light);border-radius:10px;padding:14px;margin-bottom:14px">
+        <div style="font-size:13px;color:var(--teal);font-weight:600"><i class="ti ti-check"></i> Plano Pro ativo</div>
+        <div style="font-size:13px;margin-top:4px">${days} dia(s) até a próxima renovação (${renewal.toLocaleDateString('pt-BR')}).</div>
+      </div>
+      <div class="fin-row"><span style="color:var(--text2)">Plano</span><span style="font-weight:600">Pro — R$ 59,90/mês</span></div>
+    `;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const tab = document.getElementById('tab-' + id);
+  const nav = document.querySelector('[data-tab="' + id + '"]');
+  if (tab) tab.classList.add('active');
+  if (nav) nav.classList.add('active');
+  // Re-render dynamic tabs
+  if (id === 'dashboard')  renderDashboard();
+  if (id === 'agenda')     renderAgenda();
+  if (id === 'clientes')   renderClients();
+  if (id === 'financeiro') renderFinanceiro();
+}
+
+function closeModals() {
+  document.querySelectorAll('.modal-bg').forEach(m => m.classList.remove('open'));
+}
+
+function showNotif(msg, isErr) {
+  const n = document.getElementById('notif');
+  n.textContent = (isErr ? '⚠ ' : '✓ ') + msg;
+  n.className = 'notif show' + (isErr ? ' err' : '');
+  clearTimeout(n._t);
+  n._t = setTimeout(() => n.classList.remove('show'), 3500);
+}
+
+function copyLink() {
+  const link = 'https://' + document.getElementById('pub-link').textContent;
+  navigator.clipboard.writeText(link).then(() => showNotif('Link copiado!')).catch(() => showNotif(link));
+}
+
+function uid() {
+  return Math.random().toString(36).slice(2,10) + Date.now().toString(36);
+}
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function getInitials(name) {
+  if (!name) return '??';
+  return name.trim().split(' ').slice(0,2).map(w=>w[0]&&w[0].toUpperCase()||'').join('');
+}
+function norm(s) { return (s||'').trim().toLowerCase(); }
+function slug(s) { return (s||'').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,''); }
+function fmt(n)  { return Number(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+function dateStr(d) {
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function fmtDate(s) {
+  if (!s) return '—';
+  const [y,m,d] = s.split('-');
+  return d+'/'+m+'/'+y;
+}
+function statusLabel(s) {
+  return { pendente:'Pendente', confirmado:'Confirmado', concluido:'Concluído', cancelado:'Cancelado' }[s] || s;
+}
+
+// Close modal on backdrop click
+document.querySelectorAll('.modal-bg').forEach(bg => {
+  bg.addEventListener('click', e => { if (e.target === bg) closeModals(); });
+});
+
+// Poll for new client bookings every 15s
+setInterval(() => {
+  const raw = localStorage.getItem(SHARED_KEY);
+  if (!raw) return;
+  try {
+    const newShared = JSON.parse(raw);
+    const oldCount = shared.appts.length;
+    const newCount = newShared.appts ? newShared.appts.length : 0;
+    if (newCount > oldCount) {
+      shared = newShared;
+      saveSession();
+      renderDashboard(); renderAgenda(); renderFinanceiro(); renderClients();
+      showNotif('🔔 Novo agendamento recebido pelo app do cliente!');
+    }
+  } catch(e) {}
+}, 15000);
+
+// ─── Init ────────────────────────────────────────────────
+loadAll();
+route();
+</script>
+</body>
+</html>
